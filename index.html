@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>叶滕旭 · AI名片</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f5e6d3;overflow:hidden;position:relative}
+
+/* ── 动态动漫背景 ── */
+.bg-scene{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg-scene img{width:100%;height:100%;object-fit:cover;object-position:center center;animation:bgPan 20s ease-in-out infinite alternate}
+@keyframes bgPan{0%{transform:scale(1) translateX(0)}100%{transform:scale(1.06) translateX(-18px)}}
+
+/* 云朵 */
+.clouds{position:fixed;inset:0;z-index:1;pointer-events:none}
+.cloud{position:absolute;background:radial-gradient(ellipse at center,rgba(255,200,150,.22),transparent 70%);border-radius:50%}
+.cloud:nth-child(1){width:280px;height:75px;top:6%;left:2%;animation:cloudDrift 30s linear infinite}
+.cloud:nth-child(2){width:220px;height:60px;top:15%;left:50%;animation:cloudDrift 35s linear infinite 8s}
+.cloud:nth-child(3){width:190px;height:48px;top:4%;left:70%;animation:cloudDrift 26s linear infinite 14s}
+@keyframes cloudDrift{0%{transform:translateX(0)}100%{transform:translateX(115vw)}}
+
+/* 飞鸟 - SVG真实鸟形 */
+.birds{position:fixed;z-index:1;pointer-events:none}
+.birds .bird{position:absolute;width:24px;height:16px;animation:birdFly var(--d,18s) linear infinite;animation-delay:var(--delay,0s)}
+.birds .bird svg{width:100%;height:100%;fill:none;stroke:rgba(40,35,30,.15);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.bird:nth-child(1){top:14%;left:-30px;--d:18s;--delay:0s}
+.bird:nth-child(2){top:20%;left:-60px;--d:22s;--delay:3s;transform:scale(.8)}
+.bird:nth-child(3){top:11%;left:-90px;--d:20s;--delay:7s;transform:scale(.6)}
+.bird:nth-child(4){top:17%;left:-120px;--d:25s;--delay:5s;transform:scale(.7)}
+.bird:nth-child(5){top:23%;left:-50px;--d:19s;--delay:11s;transform:scale(.55)}
+@keyframes birdFly{0%{transform:translateX(0) translateY(0)}25%{transform:translateX(25vw) translateY(-6px)}50%{transform:translateX(50vw) translateY(0)}75%{transform:translateX(75vw) translateY(-4px)}100%{transform:translateX(110vw) translateY(0)}}
+
+/* 草地摇曳 - 用多根草叶实现 */
+.grass-area{position:fixed;bottom:0;left:0;right:0;height:100px;z-index:1;pointer-events:none}
+.grass-blade{position:absolute;bottom:0;width:3px;background:linear-gradient(to top,rgba(100,140,60,.15),rgba(160,200,100,.08));border-radius:50% 50% 0 0;transform-origin:bottom center;animation:sway var(--dur,2.5s) ease-in-out infinite;animation-delay:var(--delay,0s)}
+.grass-blade:nth-child(1){left:3%;height:42px;--dur:2.8s;--delay:0s}
+.grass-blade:nth-child(2){left:8%;height:34px;--dur:3.2s;--delay:0.4s}
+.grass-blade:nth-child(3){left:14%;height:48px;--dur:2.6s;--delay:0.8s}
+.grass-blade:nth-child(4){left:20%;height:28px;--dur:3.4s;--delay:0.2s}
+.grass-blade:nth-child(5){left:25%;height:38px;--dur:2.9s;--delay:0.6s}
+.grass-blade:nth-child(6){left:30%;height:45px;--dur:3.1s;--delay:1.0s}
+.grass-blade:nth-child(7){left:35%;height:32px;--dur:2.7s;--delay:0.3s}
+.grass-blade:nth-child(8){left:40%;height:40px;--dur:3.3s;--delay:0.7s}
+.grass-blade:nth-child(9){left:45%;height:36px;--dur:2.5s;--delay:0.1s}
+.grass-blade:nth-child(10){left:50%;height:44px;--dur:3.0s;--delay:0.5s}
+.grass-blade:nth-child(11){left:55%;height:30px;--dur:2.8s;--delay:0.9s}
+.grass-blade:nth-child(12){left:60%;height:46px;--dur:3.2s;--delay:0.2s}
+.grass-blade:nth-child(13){left:65%;height:35px;--dur:2.6s;--delay:0.6s}
+.grass-blade:nth-child(14){left:70%;height:40px;--dur:3.4s;--delay:1.0s}
+.grass-blade:nth-child(15){left:75%;height:28px;--dur:2.9s;--delay:0.4s}
+.grass-blade:nth-child(16){left:80%;height:42px;--dur:3.1s;--delay:0.8s}
+.grass-blade:nth-child(17){left:85%;height:36px;--dur:2.7s;--delay:0.1s}
+.grass-blade:nth-child(18){left:90%;height:44px;--dur:3.3s;--delay:0.5s}
+.grass-blade:nth-child(19){left:95%;height:32px;--dur:2.5s;--delay:0.9s}
+.grass-blade:nth-child(20){left:98%;height:38px;--dur:3.0s;--delay:0.3s}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+
+/* 底部草地渐变 */
+.grass-base{position:fixed;bottom:0;left:0;right:0;height:60px;z-index:1;pointer-events:none;background:linear-gradient(to top,rgba(140,170,90,.12),transparent);animation:grassPulse 4s ease-in-out infinite}
+@keyframes grassPulse{0%,100%{opacity:.6}50%{opacity:.9}}
+
+/* 暖色叠层 */
+.bg-overlay{position:fixed;inset:0;z-index:1;background:linear-gradient(to bottom,rgba(255,180,100,.08) 0%,rgba(200,120,60,.04) 40%,transparent 70%);pointer-events:none}
+
+/* ── 主容器 ── */
+.container{position:relative;z-index:2;width:420px;height:680px;background:#fff;border-radius:24px;box-shadow:0 8px 40px rgba(0,0,0,.1),0 2px 12px rgba(0,0,0,.05);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(200,180,160,.12)}
+
+/* ── 头部 ── */
+.header{background:linear-gradient(135deg,#f8f4f0,#f0ebe5);padding:14px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(200,180,160,.1);flex-shrink:0}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#d4a574,#b8835a);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;font-weight:700;flex-shrink:0;box-shadow:0 2px 6px rgba(180,130,90,.2)}
+.header-info{flex:1;min-width:0}
+.header-name{color:#4a3728;font-size:15px;font-weight:600}
+.header-status{color:rgba(100,80,60,.5);font-size:11px;display:flex;align-items:center;gap:4px;margin-top:1px}
+.dot{width:5px;height:5px;border-radius:50%;background:#6eaf6e;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.header-tags{display:flex;gap:4px;margin-top:2px;flex-wrap:wrap}
+.tag{font-size:9px;padding:1px 7px;border-radius:8px;background:rgba(180,140,100,.1);color:rgba(120,90,65,.55);border:1px solid rgba(180,140,100,.1)}
+
+/* ── 聊天区 ── */
+.chat{flex:1;overflow-y:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;background:#faf8f6}
+.chat::-webkit-scrollbar{width:3px}
+.chat::-webkit-scrollbar-track{background:transparent}
+.chat::-webkit-scrollbar-thumb{background:rgba(180,160,140,.2);border-radius:10px}
+
+.msg{display:flex;gap:8px;max-width:90%;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{margin-left:auto;flex-direction:row-reverse}
+
+.msg-avatar{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:600}
+.msg.user .msg-avatar{background:linear-gradient(135deg,#d4a574,#b8835a)}
+.msg.bot .msg-avatar{background:linear-gradient(135deg,#b8835a,#a07050)}
+
+.bubble{padding:9px 13px;border-radius:13px;font-size:13px;line-height:1.6;position:relative}
+.msg.user .bubble{background:linear-gradient(135deg,#d4a574,#c4936a);color:#fff;border-bottom-right-radius:3px}
+.msg.bot .bubble{background:#f0ebe5;color:#4a3728;border-bottom-left-radius:3px;border:1px solid rgba(200,180,160,.1)}
+
+/* ── 输入区 ── */
+.input-area{flex-shrink:0;padding:10px 14px 14px;border-top:1px solid rgba(200,180,160,.06);background:#fcfaf8}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+.input-wrap{flex:1;position:relative}
+.input-wrap textarea{width:100%;background:#f5f0eb;border:1px solid rgba(200,180,160,.12);border-radius:11px;padding:9px 13px;color:#4a3728;font-size:13px;font-family:inherit;resize:none;outline:none;min-height:38px;max-height:76px;line-height:1.4;transition:border-color .2s}
+.input-wrap textarea:focus{border-color:rgba(180,140,100,.25)}
+.input-wrap textarea::placeholder{color:rgba(160,130,105,.3)}
+.send-btn{width:38px;height:38px;border-radius:11px;border:none;background:linear-gradient(135deg,#d4a574,#c4936a);color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;box-shadow:0 2px 6px rgba(180,130,90,.15)}
+.send-btn:hover{transform:scale(1.05)}
+.send-btn:active{transform:scale(.95)}
+.send-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.quick-questions{display:flex;gap:5px;padding:7px 0 0;flex-wrap:wrap}
+.quick-btn{font-size:10px;padding:4px 11px;border-radius:12px;background:rgba(200,180,160,.06);border:1px solid rgba(200,180,160,.1);color:rgba(120,90,65,.5);cursor:pointer;transition:all .2s;white-space:nowrap}
+.quick-btn:hover{background:rgba(200,180,160,.12);border-color:rgba(180,140,100,.18);color:rgba(80,60,40,.75)}
+
+.typing{display:flex;gap:4px;padding:3px 0;align-items:center}
+.typing span{width:5px;height:5px;background:rgba(120,90,65,.2);border-radius:50%;animation:typingDot 1.4s ease-in-out infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingDot{0%,60%,100%{transform:scale(1);opacity:.3}30%{transform:scale(1.3);opacity:.6}}
+
+@media(max-width:480px){.container{width:100%;height:100vh;border-radius:0}body{padding:0}}
+</style>
+</head>
+<body>
+
+<!-- 动态背景 -->
+<div class="bg-scene">
+  <img src="https://lingxi.wps.cn/api/aioffice/v1/short_link/3omLNvmbM" alt="黄昏乡间">
+</div>
+<div class="clouds">
+  <div class="cloud"></div>
+  <div class="cloud"></div>
+  <div class="cloud"></div>
+</div>
+<div class="birds">
+  <div class="bird"><svg viewBox="0 0 24 16"><path d="M1 12 Q6 4 12 8 Q18 4 23 12" /><path d="M12 8 Q14 2 18 1" stroke="rgba(40,35,30,.1)"/></svg></div>
+  <div class="bird"><svg viewBox="0 0 24 16"><path d="M1 12 Q6 4 12 8 Q18 4 23 12" /></svg></div>
+  <div class="bird"><svg viewBox="0 0 24 16"><path d="M1 12 Q6 4 12 8 Q18 4 23 12" /></svg></div>
+  <div class="bird"><svg viewBox="0 0 24 16"><path d="M1 12 Q6 4 12 8 Q18 4 23 12" /></svg></div>
+  <div class="bird"><svg viewBox="0 0 24 16"><path d="M1 12 Q6 4 12 8 Q18 4 23 12" /></svg></div>
+</div>
+<div class="grass-area">
+  <div class="grass-blade"></div><div class="grass-blade"></div><div class="grass-blade"></div>
+  <div class="grass-blade"></div><div class="grass-blade"></div><div class="grass-blade"></div>
+  <div class="grass-blade"></div><div class="grass-blade"></div><div class="grass-blade"></div>
+  <div class="grass-blade"></div><div class="grass-blade"></div><div class="grass-blade"></div>
+  <div class="grass-blade"></div><div class="grass-blade"></div><div class="grass-blade"></div>
+  <div class="grass-blade"></div><div class="grass-blade"></div><div class="grass-blade"></div>
+  <div class="grass-blade"></div><div class="grass-blade"></div>
+</div>
+<div class="grass-base"></div>
+<div class="bg-overlay"></div>
+
+<!-- 主容器 -->
+<div class="container">
+  <div class="header">
+    <div class="avatar">叶</div>
+    <div class="header-info">
+      <div class="header-name">叶滕旭</div>
+      <div class="header-status"><span class="dot"></span>在线 · HRBP</div>
+      <div class="header-tags">
+        <span class="tag">&#x1F4BC; 7年经验</span>
+        <span class="tag">&#x1F3AF; 全盘HR</span>
+        <span class="tag">&#x2728; ENFJ</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="input-area">
+    <div class="input-row">
+      <div class="input-wrap">
+        <textarea id="input" rows="1" placeholder="输入你想了解的问题…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+      </div>
+      <button class="send-btn" onclick="send()"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+    </div>
+    <div class="quick-questions">
+      <span class="quick-btn" onclick="quickAsk('请介绍一下你自己')">&#x1F464; 自我介绍</span>
+      <span class="quick-btn" onclick="quickAsk('你的核心优势是什么')">&#x1F4A1; 核心优势</span>
+      <span class="quick-btn" onclick="quickAsk('你的工作经历有哪些')">&#x1F4CB; 工作经历</span>
+      <span class="quick-btn" onclick="quickAsk('你的职业规划是什么')">&#x1F3AF; 职业规划</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+const input = document.getElementById('input');
+
+// ════════════════════════════════════════
+// 简历数据 & 回复
+// ════════════════════════════════════════
+const resume = {
+  name:'叶滕旭',basic:'男 · 26岁 · 7年HR全盘经验 · HRBP方向 · 期望薪资：10-15K · 北京',email:'2763304836@qq.com',
+  summary:'7年人力资源全盘经验，具备人力资源规划、招聘配置、绩效管理、薪酬福利、培训发展、员工关系六大模块的系统性实战能力。近3年专注HRBP角色，深入渗透跨境电商、光伏制造、零售等行业业务场景，具备从0到1搭建体系、推动组织变革、赋能业务增长的复合能力。',
+  core:[
+    '绩效管理：精通OKR/KPI/360等工具，主导过5个不同业务单元的绩效体系搭建与落地，覆盖销售、运营、供应链、生产车间等岗位序列，擅长将业务战略目标逐级解码为可量化、可追踪的考核指标',
+    '员工关系：主导过千人规模组织架构调整期的员工沟通与关系管理，全流程管控入转调离、劳动争议预防与处理、离职面谈与保留策略，累计完成绩效面谈与离职面谈200+人次',
+    '培训发展：具备培训体系搭建与全流程管理经验，从组织需求诊断、年度培训计划制定、课程资源开发与引入，到培训实施落地、效果评估与复盘优化，曾主导管理团队专项培训项目及新员工入职培训体系的搭建'
+  ],
+  jobs:[
+    {company:'深圳市加速度传媒科技有限责任公司',title:'HRBP',period:'2025.07 - 至今',industry:'电商'},
+    {company:'四川高景太阳能科技有限公司',title:'HRBP',period:'2023.12 - 2025.05',industry:'光伏制造（千人规模）'},
+    {company:'西安缪斯广告文化传播有限公司',title:'人力资源经理/主管',period:'2022.11 - 2023.12',industry:'广告传媒'},
+    {company:'福州朴朴电子商务有限公司',title:'门店人资行政主管',period:'2021.07 - 2022.10',industry:'新零售'},
+    {company:'四川省宜宾一二三智能有限公司',title:'办公室助理',period:'2021.01 - 2021.04',industry:'智能科技'}
+  ],
+  education:[{school:'深圳大学',degree:'本科',major:'工商管理',period:'2018 - 2021'},{school:'广州城建职业学院',degree:'大专',major:'工商企业管理',period:'2018 - 2021'}],
+  awards:'在校期间担任班长兼团支书、学生事务中心副主任，多次获评优秀学生干部，获"互联网+"竞赛晋级奖',
+  certs:'计算机二级 · 英语四级 · 高级营销员 · C2驾驶证'
+};
+
+function getResponse(t) {
+  const q = t.trim().toLowerCase();
+  if (!q) return '请说点什么吧～';
+
+  // 自我介绍 — 完整版
+  if (/你好|嗨|hi|hello/.test(q) && !/介绍/.test(q)) return '你好呀！我是叶滕旭，很高兴认识你～有什么想了解的，尽管问我！';
+
+  if (/你是谁|自我介绍|介绍自己|请介绍一下你自己/.test(q)) {
+    return `你好！我是叶滕旭，今年26岁，是一名拥有7年人力资源全盘经验的HRBP。\n\n我具备人力资源规划、招聘配置、绩效管理、薪酬福利、培训发展、员工关系六大模块的系统性实战能力，近3年专注HRBP角色，深入渗透跨境电商、光伏制造、零售等行业业务场景，具备从0到1搭建体系、推动组织变革、赋能业务增长的复合能力。\n\n期望在人力资源方向深耕，成为一个专业、有影响力的HR从业者。\n\n想了解更多，可以问我关于我的核心优势、工作经历、职业规划或者性格爱好～`;
+  }
+
+  if (/名字|姓名/.test(q)&&!/公司/.test(q)) return `我叫${resume.name}，你可以叫我滕旭就好～`;
+  if (/年龄|多大|几岁/.test(q)) return '我今年26岁，从事HR工作已经7年了，算是比较早进入这个行业的～';
+  if (/电话|手机|联系|微信|怎么联系/.test(q)) return `可以通过邮箱联系我：${resume.email}，欢迎随时沟通交流～`;
+  if (/邮箱|email/.test(q)) return `我的邮箱是 ${resume.email}，期待与你的交流！`;
+  if (/学历|学校|毕业|教育/.test(q)) return `我毕业于${resume.education[0].school} ${resume.education[0].degree}（${resume.education[0].major}专业），同时还读了${resume.education[1].school}的${resume.education[1].major}专业。${resume.awards}`;
+  if (/证书/.test(q)) return `我目前持有的证书有：${resume.certs}`;
+  if (/优势|核心竞争力|擅长|强项|亮点/.test(q)) return `我的核心优势主要体现在三个方面：\n\n1️⃣ ${resume.core[0]}\n\n2️⃣ ${resume.core[1]}\n\n3️⃣ ${resume.core[2]}\n\n总结来说，我是一个既懂业务又懂人的HRBP，能真正为业务赋能。`;
+  if (/绩效/.test(q)) return `绩效管理是我非常擅长的领域。我精通OKR、KPI、360等工具，主导过5个不同业务单元的绩效体系搭建与落地，覆盖销售、运营、供应链、生产车间等岗位序列。我擅长将业务战略目标逐级解码为可量化、可追踪的考核指标，并通过绩效面谈与改进计划推动目标达成。`;
+  if (/员工关系/.test(q)) return `员工关系是我另一个核心优势板块。我主导过千人规模组织架构调整期的员工沟通与关系管理，全流程管控入转调离、劳动争议预防与处理，累计完成绩效面谈与离职面谈200+人次，具备较强的用工风险预判与矛盾化解能力。`;
+  if (/培训/.test(q)) return `培训发展方面，我具备从0到1搭建培训体系的能力。从组织需求诊断、年度培训计划制定、课程资源开发与引入，到培训实施落地、效果评估与复盘优化，有完整的全流程管理经验。曾主导管理团队专项培训项目及新员工入职培训体系的搭建。`;
+  if (/招聘/.test(q)) return `招聘配置方面，我擅长制定年度/季度人力编制计划与招聘策略，主导关键岗位招募全流程，运用多元化招聘渠道与人才Mapping方法精准匹配人才供给。`;
+  if (/薪酬/.test(q)) return `薪酬福利方面，我参与过薪酬调研与宽带薪酬结构优化，定期进行竞争力对标分析，提出调薪建议并推动实施，确保薪酬体系的内部公平性与外部竞争力。`;
+  if (/工作经历|工作经验|做过什么|履历/.test(q)) {let r='我有5段工作经历，目前最新的履历如下：\n\n';resume.jobs.forEach((j,i)=>{r+=`${i+1}. ${j.company} ｜ ${j.title}（${j.period}）\n   行业：${j.industry}\n`;});r+='\n想了解某一段的详细内容，可以具体问我哦～';return r;}
+  if (/加速度/.test(q)) return `在加速度传媒科技担任HRBP（2025.07至今），主要负责电商业务的人力资源全盘工作。核心工作包括：搭建OKR/KPI绩效管理体系、主导人才配置与员工关系管理、推行培训赋能方案、制定招聘策略与薪酬优化方案等。`;
+  if (/高景/.test(q)) return `在高景太阳能担任HRBP（2023.12-2025.05），千人规模光伏制造企业。主导了绩效考核体系搭建，负责员工全生命周期管理，累计完成200+人次面谈，建立了培训效果四级评估机制。`;
+  if (/缪斯/.test(q)) return `在缪斯广告担任人力资源经理/主管（2022.11-2023.12），统筹公司人力资源全模块运营。搭建了绩效管理体系，主导了管理团队专项培训项目全流程管理。`;
+  if (/朴朴/.test(q)) return `在朴朴电商担任门店人资行政主管（2021.07-2022.10），负责门店人力资源全盘工作。建立了门店绩效激励制度，主导了新员工培训体系搭建。`;
+  if (/一二三/.test(q)) return `在一二三智能担任办公室助理（2021.01-2021.04），这是我职业生涯的起点。辅助完成组织架构调整及新绩效考核方案落地，负责社保投保与申领等日常人事工作。`;
+  if (/职业规划|未来|方向|计划/.test(q)) return `我的职业规划是在人力资源方向深耕，持续提升专业深度。目前专注在HRBP领域，希望未来能成为更专业、更有影响力的HR领导者。我的梦想是成为一个闪闪发光的人，在HR领域创造真正的价值。`;
+  if (/mbti|性格/.test(q)) return `我的MBTI是ENFJ（教育家型），性格比较外向，喜欢与人交流沟通。这也是我选择HR这个职业的原因之一——能够与人打交道，帮助他人成长，同时为组织创造价值。`;
+  if (/爱好|兴趣|喜欢.*做|业余/.test(q)) return `工作之余，我比较喜欢看电影和动漫，是宝可梦的忠实粉丝！运动方面我坚持长跑和打羽毛球，既能锻炼身体也能放松心情。最喜欢的书是《追风筝的人》，"为你，千千万万遍"这句话一直很打动我。`;
+  if (/电影/.test(q)) return `我很喜欢看电影，各种类型都会涉猎。好的电影能让人思考、共鸣，也是我放松的一种方式～`;
+  if (/动漫|动画/.test(q)) return `我是动漫爱好者！最喜欢的IP是宝可梦，从小看到大，皮卡丘真的太可爱了～`;
+  if (/宝可梦|pokemon|皮卡丘/.test(q)) return `宝可梦是我最喜欢的IP！从小就开始看宝可梦的动画和玩相关游戏，可以说陪伴了我的成长。`;
+  if (/运动|跑步|长跑|羽毛球/.test(q)) return `我坚持的运动是长跑和羽毛球。长跑让我学会了坚持和节奏感，羽毛球则是我和朋友们经常约的项目～`;
+  if (/书|追风筝的人/.test(q)) return `最喜欢的书是《追风筝的人》。"为你，千千万万遍"——这句话关于忠诚、救赎和勇气，每次读都有不同的感悟。`;
+  if (/梦想|目标|闪闪发光/.test(q)) return `我的梦想是能成为一个闪闪发光的人。不是说要多么耀眼，而是希望在自己的领域里做到专业、有影响力，能够真正帮助到他人，为组织创造价值。`;
+  if (/工作态度|原则|立场/.test(q)) return `对待工作，我是严肃认真的。HR工作涉及员工的切身利益和组织的健康发展，必须有立场、有原则。专业度是我一直追求的目标。`;
+  if (/薪资|工资|待遇|期望/.test(q)) return `我目前的期望薪资范围是10-15K，当然具体可以根据岗位职责和发展空间来沟通。我更看重的是能够在合适的平台上发挥自己的专业能力，持续成长。`;
+  return `谢谢你的提问！关于"${q.slice(0,20)}"，你可以试试问我：自我介绍、核心优势、工作经历、职业规划、性格爱好等。或者直接告诉我具体想了解的，我会认真回答的～`;
+}
+
+function addMsg(text,role){const div=document.createElement('div');div.className=`msg ${role}`;div.innerHTML=`<div class="msg-avatar">${role==='user'?'你':'叶'}</div><div><div class="bubble">${text.replace(/\n/g,'<br>')}</div></div>`;chat.appendChild(div);chat.scrollTop=chat.scrollHeight}
+async function botReply(text){const div=document.createElement('div');div.className='msg bot';div.innerHTML='<div class="msg-avatar">叶</div><div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>';chat.appendChild(div);chat.scrollTop=chat.scrollHeight;await new Promise(r=>setTimeout(r,500+Math.random()*500));div.querySelector('.bubble').innerHTML=text.replace(/\n/g,'<br>');chat.scrollTop=chat.scrollHeight}
+function send(){const text=input.value.trim();if(!text)return;addMsg(text,'user');input.value='';input.style.height='auto';botReply(getResponse(text))}
+function quickAsk(t){addMsg(t,'user');botReply(getResponse(t))}
+input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,76)+'px'});
+window.onload=()=>{setTimeout(()=>{botReply('你好呀！我是叶滕旭，一名正在人力方向深耕的HRBP 👋\n\n你可以问我关于我的工作经历、核心优势、职业规划，或者聊聊我的爱好和性格～有什么想了解的尽管问！')},600)};
+</script>
+</body>
+</html>
