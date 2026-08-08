@@ -326,6 +326,37 @@ window.onload=function(){
     botReply('你好呀！我是叶滕旭，一名正在人力方向深耕的HRBP 👋\n\n你可以问我关于我的工作经历、核心优势、职业规划，或者聊聊我的爱好和性格～有什么想了解的尽管问！');
   }, 600);
 };
+
+// 数据采集 SDK — 记录访客 & 问答到后台
+(function(){
+  var API='https://yitengxu-hr-backend-production.up.railway.app';
+  var visitorId=null;
+  fetch(API+'/api/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ip:'',ua:navigator.userAgent,referrer:document.referrer||'',page:window.location.pathname})}).then(function(r){return r.json()}).then(function(d){visitorId=d.visitor_id}).catch(function(){});
+  var origSend=window.send;
+  window.send=function(){
+    var text=document.getElementById('input')?document.getElementById('input').value:'';
+    if(text&&visitorId){
+      setTimeout(function(){
+        var bubbles=document.querySelectorAll('.msg.bot:last-child .bubble');
+        var answer=bubbles.length?bubbles[bubbles.length-1].textContent:'';
+        fetch(API+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitor_id:visitorId,question:text,answer:answer,match_type:'auto'})}).catch(function(){});
+      },1500);
+    }
+    if(origSend)origSend();
+  };
+  var origQuick=window.quickAsk;
+  window.quickAsk=function(t){
+    if(t&&visitorId){
+      setTimeout(function(){
+        var bubbles=document.querySelectorAll('.msg.bot:last-child .bubble');
+        var answer=bubbles.length?bubbles[bubbles.length-1].textContent:'';
+        fetch(API+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({visitor_id:visitorId,question:t,answer:answer,match_type:'quick'})}).catch(function(){});
+      },1500);
+    }
+    if(origQuick)origQuick(t);
+  };
+})();
+
 </script>
 </body>
 </html>
