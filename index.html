@@ -119,8 +119,7 @@ body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;min-height:100vh;dis
 @keyframes typingDot{0%,60%,100%{transform:scale(1);opacity:.3}30%{transform:scale(1.3);opacity:.6}}
 
 /* ── Canvas动态壁纸层 ── */
-#bgCanvas{position:fixed;inset:0;z-index:1;width:100%;height:100%;pointer-events:none;opacity:0}
-#bgCanvas.loaded{opacity:1;transition:opacity 1s}
+#bgCanvas{position:fixed;inset:0;z-index:1;width:100%;height:100%;pointer-events:none;display:block}
 
 @media(max-width:480px){.container{width:100%;height:100vh;border-radius:0}body{padding:0}}
 </style>
@@ -387,86 +386,250 @@ function send(){const text=input.value.trim();if(!text)return;addMsg(text,'user'
 function quickAsk(t){addMsg(t,'user');botReply(getResponse(t))}
 input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,76)+'px'});
 // ── Canvas动态壁纸动画 ──
-const cv=document.getElementById('bgCanvas'),cx=cv.getContext('2d');
-let W,H;
-function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
-window.addEventListener('resize',resize);resize();
+(function(){
+  try {
+    const cv = document.getElementById('bgCanvas');
+    if (!cv) return;
+    const cx = cv.getContext('2d');
+    if (!cx) return;
+    
+    let W, H;
+    function resize() {
+      W = cv.width = window.innerWidth;
+      H = cv.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    
+    // 如果尺寸为0，延迟重试
+    if (W === 0 || H === 0) {
+      setTimeout(resize, 100);
+    }
+    
+    // 骑自行车的人
+    const bike = { x: W + 100, y: H * 0.74, spd: 0.7, pedal: 0 };
+    
+    // 蝴蝶
+    function createButterflies(count) {
+      const list = [];
+      for (let i = 0; i < count; i++) {
+        list.push({
+          x: Math.random() * W,
+          y: H * 0.55 + Math.random() * H * 0.2,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.2,
+          sz: 5 + Math.random() * 4,
+          phase: Math.random() * 6.28,
+          wa: 0,
+          update() {
+            this.x += this.vx;
+            this.y += this.vy + Math.sin(Date.now() * 0.002 + this.phase) * 0.15;
+            this.wa = Math.sin(Date.now() * 0.004 + this.phase) * 0.5;
+            if (this.x < -20 || this.x > W + 20 || this.y < H * 0.5 || this.y > H * 0.85) {
+              this.x = Math.random() * W;
+              this.y = H * 0.55 + Math.random() * H * 0.2;
+            }
+          },
+          draw() {
+            cx.save();
+            cx.translate(this.x, this.y);
+            cx.fillStyle = 'rgba(255,180,100,0.45)';
+            cx.beginPath();
+            cx.ellipse(-3, 0, 5, 3, -this.wa, 0, Math.PI * 2);
+            cx.fill();
+            cx.beginPath();
+            cx.ellipse(3, 0, 5, 3, this.wa, 0, Math.PI * 2);
+            cx.fill();
+            cx.fillStyle = 'rgba(80,60,40,0.35)';
+            cx.fillRect(-1, -2, 2, 4);
+            cx.restore();
+          }
+        });
+      }
+      return list;
+    }
+    
+    const bfs = createButterflies(3);
+    
+    // 花瓣
+    function createPetals(count) {
+      const list = [];
+      for (let i = 0; i < count; i++) {
+        list.push({
+          x: Math.random() * W,
+          y: -15 - Math.random() * 50,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: 0.25 + Math.random() * 0.3,
+          r: Math.random() * 6.28,
+          rs: (Math.random() - 0.5) * 0.025,
+          sz: 3 + Math.random() * 3,
+          o: 0.2 + Math.random() * 0.3,
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.r += this.rs;
+            if (this.y > H + 15) {
+              this.x = Math.random() * W;
+              this.y = -15;
+              this.vy = 0.25 + Math.random() * 0.3;
+            }
+          },
+          draw() {
+            cx.save();
+            cx.translate(this.x, this.y);
+            cx.rotate(this.r);
+            cx.fillStyle = 'rgba(255,200,150,' + this.o + ')';
+            cx.beginPath();
+            cx.ellipse(0, 0, this.sz, this.sz * 0.5, 0, 0, Math.PI * 2);
+            cx.fill();
+            cx.restore();
+          }
+        });
+      }
+      return list;
+    }
+    
+    const pts = createPetals(6);
+    
+    // 绘制骑自行车的人
+    function drawBike(x, y, pa) {
+      cx.save();
+      cx.translate(x, y);
+      const s = 0.55;
+      
+      // 后轮
+      cx.strokeStyle = 'rgba(80,60,40,0.2)';
+      cx.lineWidth = 1.5 * s;
+      cx.beginPath();
+      cx.arc(0, 0, 13 * s, 0, Math.PI * 2);
+      cx.stroke();
+      
+      // 前轮
+      cx.beginPath();
+      cx.arc(28 * s, 0, 13 * s, 0, Math.PI * 2);
+      cx.stroke();
+      
+      // 车架
+      cx.beginPath();
+      cx.moveTo(0, 0);
+      cx.lineTo(10 * s, -20 * s);
+      cx.lineTo(28 * s, 0);
+      cx.moveTo(10 * s, -20 * s);
+      cx.lineTo(20 * s, -13 * s);
+      cx.stroke();
+      
+      // 坐垫
+      cx.fillStyle = 'rgba(80,60,40,0.22)';
+      cx.fillRect(8 * s, -22 * s, 5 * s, 2 * s);
+      
+      // 车把
+      cx.fillRect(18 * s, -15 * s, 4 * s, 1.5 * s);
+      
+      // 踏板
+      const px = 10 * s + Math.cos(pa) * 6 * s;
+      const py = -20 * s + Math.sin(pa) * 6 * s;
+      const px2 = 10 * s + Math.cos(pa + Math.PI) * 6 * s;
+      const py2 = -20 * s + Math.sin(pa + Math.PI) * 6 * s;
+      
+      cx.strokeStyle = 'rgba(80,60,40,0.18)';
+      cx.lineWidth = 1.5 * s;
+      cx.beginPath();
+      cx.moveTo(px, py);
+      cx.lineTo(px2, py2);
+      cx.stroke();
+      
+      // 腿
+      cx.lineWidth = 2 * s;
+      cx.beginPath();
+      cx.moveTo(10 * s, -20 * s);
+      cx.lineTo(px, py);
+      cx.stroke();
+      cx.beginPath();
+      cx.moveTo(10 * s, -20 * s);
+      cx.lineTo(px2, py2);
+      cx.stroke();
+      
+      // 身体
+      cx.beginPath();
+      cx.moveTo(10 * s, -20 * s);
+      cx.lineTo(14 * s, -34 * s);
+      cx.stroke();
+      
+      // 手臂
+      cx.beginPath();
+      cx.moveTo(14 * s, -28 * s);
+      cx.lineTo(20 * s, -15 * s);
+      cx.stroke();
+      cx.beginPath();
+      cx.moveTo(14 * s, -30 * s);
+      cx.lineTo(20 * s, -14 * s);
+      cx.stroke();
+      
+      // 头
+      cx.fillStyle = 'rgba(220,190,170,0.25)';
+      cx.beginPath();
+      cx.arc(14 * s, -38 * s, 5.5 * s, 0, Math.PI * 2);
+      cx.fill();
+      cx.strokeStyle = 'rgba(180,150,130,0.15)';
+      cx.lineWidth = 1 * s;
+      cx.stroke();
+      
+      // 头发
+      cx.fillStyle = 'rgba(60,40,30,0.18)';
+      cx.beginPath();
+      cx.arc(14 * s, -40 * s, 5.5 * s, Math.PI, 0);
+      cx.fill();
+      
+      cx.restore();
+    }
+    
+    // 修正自行车初始位置
+    bike.x = W + 100;
+    
+    // 动画循环
+    function animate() {
+      try {
+        cx.clearRect(0, 0, W, H);
+        
+        // 自行车
+        bike.x -= bike.spd;
+        bike.pedal += 0.05;
+        if (bike.x < -80) bike.x = W + 80;
+        drawBike(bike.x, bike.y, bike.pedal);
+        
+        // 蝴蝶
+        for (let i = 0; i < bfs.length; i++) bfs[i].update();
+        for (let i = 0; i < bfs.length; i++) bfs[i].draw();
+        
+        // 花瓣
+        for (let i = 0; i < pts.length; i++) pts[i].update();
+        for (let i = 0; i < pts.length; i++) pts[i].draw();
+        
+      } catch(e) {
+        // 静默处理错误
+      }
+      requestAnimationFrame(animate);
+    }
+    
+    // 页面加载完成后启动动画
+    if (document.readyState === 'complete') {
+      animate();
+    } else {
+      window.addEventListener('load', function() {
+        setTimeout(animate, 200);
+      });
+    }
+    
+  } catch(e) {
+    // Canvas初始化失败，静默处理
+  }
+})();
 
-// 骑自行车的人
-const bike={x:W+80,y:H*0.74,spd:0.7,pedal:0};
-
-// 蝴蝶
-class Bfly{
-  constructor(){this.reset()}
-  reset(){this.x=Math.random()*W;this.y=H*0.55+Math.random()*H*0.2;this.vx=(Math.random()-0.5)*0.4;this.vy=(Math.random()-0.5)*0.2;this.sz=5+Math.random()*4;this.p=Math.random()*6.28;this.wa=0}
-  update(){this.x+=this.vx;this.y+=this.vy+Math.sin(Date.now()*0.002+this.p)*0.15;this.wa=Math.sin(Date.now()*0.004+this.p)*0.5;if(this.x<-20||this.x>W+20||this.y<H*0.5||this.y>H*0.85)this.reset()}
-  draw(){cx.save();cx.translate(this.x,this.y);cx.fillStyle='rgba(255,180,100,0.45)';cx.beginPath();cx.ellipse(-3,0,5,3,-this.wa,0,6.28);cx.fill();cx.beginPath();cx.ellipse(3,0,5,3,this.wa,0,6.28);cx.fill();cx.fillStyle='rgba(80,60,40,0.35)';cx.fillRect(-1,-2,2,4);cx.restore()}
-}
-const bfs=[];for(let i=0;i<3;i++)bfs.push(new Bfly());
-
-// 花瓣
-class Ptl{
-  constructor(){this.reset()}
-  reset(){this.x=Math.random()*W;this.y=-15;this.vx=(Math.random()-0.5)*0.3;this.vy=0.25+Math.random()*0.3;this.r=Math.random()*6.28;this.rs=(Math.random()-0.5)*0.025;this.sz=3+Math.random()*3;this.o=0.2+Math.random()*0.3}
-  update(){this.x+=this.vx;this.y+=this.vy;this.r+=this.rs;if(this.y>H+15)this.reset()}
-  draw(){cx.save();cx.translate(this.x,this.y);cx.rotate(this.r);cx.fillStyle=`rgba(255,200,150,${this.o})`;cx.beginPath();cx.ellipse(0,0,this.sz,this.sz*0.5,0,0,6.28);cx.fill();cx.restore()}
-}
-const pts=[];for(let i=0;i<6;i++)pts.push(new Ptl());
-
-// 绘制骑自行车的人
-function drawBike(x,y,pa){
-  cx.save();cx.translate(x,y);const s=0.55;
-  // 后轮
-  cx.strokeStyle='rgba(80,60,40,0.18)';cx.lineWidth=1.5*s;
-  cx.beginPath();cx.arc(0,0,13*s,0,6.28);cx.stroke();
-  // 前轮
-  cx.beginPath();cx.arc(28*s,0,13*s,0,6.28);cx.stroke();
-  // 车架
-  cx.beginPath();cx.moveTo(0,0);cx.lineTo(10*s,-20*s);cx.lineTo(28*s,0);cx.moveTo(10*s,-20*s);cx.lineTo(20*s,-13*s);cx.stroke();
-  // 坐垫
-  cx.fillStyle='rgba(80,60,40,0.22)';cx.fillRect(8*s,-22*s,5*s,2*s);
-  // 车把
-  cx.fillRect(18*s,-15*s,4*s,1.5*s);
-  // 踏板动画
-  const px=10*s+Math.cos(pa)*6*s,py=-20*s+Math.sin(pa)*6*s;
-  const px2=10*s+Math.cos(pa+3.14)*6*s,py2=-20*s+Math.sin(pa+3.14)*6*s;
-  cx.strokeStyle='rgba(80,60,40,0.18)';cx.lineWidth=1.5*s;
-  cx.beginPath();cx.moveTo(px,py);cx.lineTo(px2,py2);cx.stroke();
-  // 腿
-  cx.lineWidth=2*s;
-  cx.beginPath();cx.moveTo(10*s,-20*s);cx.lineTo(px,py);cx.stroke();
-  cx.beginPath();cx.moveTo(10*s,-20*s);cx.lineTo(px2,py2);cx.stroke();
-  // 身体
-  cx.beginPath();cx.moveTo(10*s,-20*s);cx.lineTo(14*s,-34*s);cx.stroke();
-  // 手臂
-  cx.beginPath();cx.moveTo(14*s,-28*s);cx.lineTo(20*s,-15*s);cx.stroke();
-  cx.beginPath();cx.moveTo(14*s,-30*s);cx.lineTo(20*s,-14*s);cx.stroke();
-  // 头
-  cx.fillStyle='rgba(220,190,170,0.25)';cx.beginPath();cx.arc(14*s,-38*s,5.5*s,0,6.28);cx.fill();
-  cx.strokeStyle='rgba(180,150,130,0.15)';cx.lineWidth=1*s;cx.stroke();
-  // 头发
-  cx.fillStyle='rgba(60,40,30,0.18)';cx.beginPath();cx.arc(14*s,-40*s,5.5*s,3.14,0);cx.fill();
-  cx.restore()
-}
-
-// 动画循环
-function animate(){
-  cx.clearRect(0,0,W,H);
-  // 自行车
-  bike.x-=bike.spd;bike.pedal+=0.05;
-  if(bike.x<-80)bike.x=W+80;
-  drawBike(bike.x,bike.y,bike.pedal);
-  // 蝴蝶
-  for(const b of bfs){b.update();b.draw()}
-  // 花瓣
-  for(const p of pts){p.update();p.draw()}
-  requestAnimationFrame(animate)
-}
-
-cv.classList.add('loaded');
-setTimeout(animate,500);
-
-window.onload=()=>{setTimeout(()=>{botReply('你好呀！我是叶滕旭，一名正在人力方向深耕的HRBP 👋\n\n你可以问我关于我的工作经历、核心优势、职业规划，或者聊聊我的爱好和性格～有什么想了解的尽管问！')},600)};
+window.onload=function(){
+  setTimeout(function(){
+    botReply('你好呀！我是叶滕旭，一名正在人力方向深耕的HRBP 👋\n\n你可以问我关于我的工作经历、核心优势、职业规划，或者聊聊我的爱好和性格～有什么想了解的尽管问！');
+  }, 600);
+};
 </script>
 </body>
 </html>
