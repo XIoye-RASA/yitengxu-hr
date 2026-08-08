@@ -119,26 +119,33 @@ body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;min-height:100vh;dis
 @keyframes typingDot{0%,60%,100%{transform:scale(1);opacity:.3}30%{transform:scale(1.3);opacity:.6}}
 
 /* ── CSS动态壁纸 - 骑自行车的人 ── */
-.cyclist{position:fixed;z-index:1;pointer-events:none;animation:cycleRide 22s linear infinite;bottom:13%;opacity:0.85}
-@keyframes cycleRide{0%{transform:translateX(105vw)}100%{transform:translateX(-80px)}}
+.cyclist{position:fixed;z-index:3;pointer-events:none;animation:cycleRide 18s linear infinite;bottom:14%;left:0;opacity:1}
+.cyclist svg{width:90px;height:auto;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.08))}
+@keyframes cycleRide{0%{transform:translateX(110vw)}100%{transform:translateX(-120px)}}
 
 /* ── CSS动态壁纸 - 蝴蝶 ── */
-.butterfly{position:fixed;z-index:1;pointer-events:none;opacity:0.7}
-.bf1{bottom:28%;animation:bfly1 12s ease-in-out infinite}
-.bf2{bottom:32%;animation:bfly2 15s ease-in-out infinite 4s}
-.bf3{bottom:25%;animation:bfly3 10s ease-in-out infinite 8s}
-@keyframes bfly1{0%{transform:translateX(-20px) translateY(0)}25%{transform:translateX(20vw) translateY(-15px)}50%{transform:translateX(45vw) translateY(5px)}75%{transform:translateX(70vw) translateY(-10px)}100%{transform:translateX(105vw) translateY(0)}}
-@keyframes bfly2{0%{transform:translateX(30vw) translateY(0)}25%{transform:translateX(50vw) translateY(-12px)}50%{transform:translateX(75vw) translateY(8px)}75%{transform:translateX(90vw) translateY(-5px)}100%{transform:translateX(110vw) translateY(0)}}
-@keyframes bfly3{0%{transform:translateX(60vw) translateY(0)}25%{transform:translateX(40vw) translateY(-10px)}50%{transform:translateX(20vw) translateY(6px)}75%{transform:translateX(5vw) translateY(-8px)}100%{transform:translateX(-30px) translateY(0)}}
+.butterfly{position:fixed;z-index:3;pointer-events:none;opacity:0.85}
+.butterfly svg{width:26px;height:auto;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.06))}
+.bf1{bottom:28%;animation:bfly1 14s ease-in-out infinite}
+.bf2{bottom:34%;animation:bfly2 16s ease-in-out infinite 4s}
+.bf3{bottom:22%;animation:bfly3 12s ease-in-out infinite 8s}
+@keyframes bfly1{0%{transform:translateX(-30px) translateY(0) scale(1)}20%{transform:translateX(20vw) translateY(-18px) scale(1.1)}40%{transform:translateX(45vw) translateY(5px) scale(0.95)}60%{transform:translateX(65vw) translateY(-12px) scale(1.05)}80%{transform:translateX(85vw) translateY(3px) scale(1)}100%{transform:translateX(110vw) translateY(0) scale(0.9)}}
+@keyframes bfly2{0%{transform:translateX(30vw) translateY(0) scale(1)}25%{transform:translateX(50vw) translateY(-15px) scale(1.08)}50%{transform:translateX(70vw) translateY(8px) scale(0.92)}75%{transform:translateX(90vw) translateY(-6px) scale(1.05)}100%{transform:translateX(115vw) translateY(0) scale(1)}}
+@keyframes bfly3{0%{transform:translateX(70vw) translateY(0) scale(1)}25%{transform:translateX(55vw) translateY(-12px) scale(1.05)}50%{transform:translateX(35vw) translateY(6px) scale(0.9)}75%{transform:translateX(15vw) translateY(-8px) scale(1.1)}100%{transform:translateX(-40px) translateY(0) scale(1)}}
 
 /* ── CSS动态壁纸 - 花瓣 ── */
-.petal{position:fixed;z-index:1;pointer-events:none;width:6px;height:4px;background:rgba(255,200,150,0.35);border-radius:50% 50% 50% 0;opacity:0.5}
-.p1{left:10%;animation:petalFall 8s linear infinite}
-.p2{left:30%;animation:petalFall 10s linear infinite 3s}
-.p3{left:50%;animation:petalFall 7s linear infinite 6s}
-.p4{left:70%;animation:petalFall 9s linear infinite 2s}
-.p5{left:85%;animation:petalFall 11s linear infinite 5s}
-@keyframes petalFall{0%{top:-10px;transform:rotate(0deg) translateX(0)}25%{transform:rotate(90deg) translateX(15px)}50%{transform:rotate(180deg) translateX(-10px)}75%{transform:rotate(270deg) translateX(20px)}100%{top:90vh;transform:rotate(360deg) translateX(0)}}
+.petal{position:fixed;z-index:3;pointer-events:none;width:10px;height:6px;background:rgba(255,200,160,0.5);border-radius:50% 50% 50% 0;box-shadow:0 0 4px rgba(255,200,150,0.15)}
+.p1{left:8%;animation:petalFall 9s linear infinite}
+.p2{left:25%;animation:petalFall 11s linear infinite 3s}
+.p3{left:42%;animation:petalFall 8s linear infinite 6s}
+.p4{left:62%;animation:petalFall 10s linear infinite 2s}
+.p5{left:78%;animation:petalFall 12s linear infinite 5s}
+.p6{left:92%;animation:petalFall 9s linear infinite 7s}
+@keyframes petalFall{0%{top:-15px;transform:rotate(0deg) translateX(0);opacity:0.6}20%{transform:rotate(60deg) translateX(12px);opacity:0.7}40%{transform:rotate(120deg) translateX(-8px);opacity:0.6}60%{transform:rotate(200deg) translateX(15px);opacity:0.5}80%{transform:rotate(280deg) translateX(-5px);opacity:0.4}100%{top:92vh;transform:rotate(360deg) translateX(5px);opacity:0.2}}
+
+/* ── CSS动态壁纸 - 光晕脉动 ── */
+.glow-pulse{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 60% 30%,rgba(255,180,100,0.06),transparent 60%);animation:glowPulse 6s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{opacity:0.5}50%{opacity:1}}
 
 @media(max-width:480px){.container{width:100%;height:100vh;border-radius:0}body{padding:0}}
 </style>
@@ -175,20 +182,20 @@ body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;min-height:100vh;dis
 
 <!-- 动态壁纸 - 骑自行车的人 -->
 <div class="cyclist" aria-hidden="true">
-  <svg viewBox="0 0 60 50" width="52" height="44">
-    <circle cx="15" cy="40" r="10" fill="none" stroke="rgba(80,60,40,0.2)" stroke-width="1.8"/>
-    <circle cx="45" cy="40" r="10" fill="none" stroke="rgba(80,60,40,0.2)" stroke-width="1.8"/>
-    <polyline points="15,40 25,22 45,40" fill="none" stroke="rgba(80,60,40,0.2)" stroke-width="1.8"/>
-    <line x1="25" y1="22" x2="38" y2="28" stroke="rgba(80,60,40,0.2)" stroke-width="1.8"/>
-    <rect x="22" y="19" width="6" height="3" rx="1" fill="rgba(80,60,40,0.25)"/>
-    <line x1="36" y1="26" x2="42" y2="24" stroke="rgba(80,60,40,0.2)" stroke-width="1.8"/>
-    <line x1="25" y1="22" x2="28" y2="8" stroke="rgba(80,60,40,0.25)" stroke-width="2.2"/>
-    <line x1="28" y1="12" x2="36" y2="26" stroke="rgba(80,60,40,0.2)" stroke-width="1.8"/>
-    <line x1="28" y1="14" x2="38" y2="28" stroke="rgba(80,60,40,0.2)" stroke-width="1.8"/>
-    <circle cx="28" cy="4" r="5" fill="rgba(220,190,170,0.25)" stroke="rgba(80,60,40,0.15)" stroke-width="1.5"/>
-    <path d="M23,3 Q28,-2 33,3" fill="rgba(60,40,30,0.18)"/>
-    <line x1="26" y1="22" x2="22" y2="34" stroke="rgba(80,60,40,0.2)" stroke-width="2"/>
-    <line x1="24" y1="22" x2="28" y2="34" stroke="rgba(80,60,40,0.2)" stroke-width="2"/>
+  <svg viewBox="0 0 60 50" width="90" height="75">
+    <circle cx="15" cy="40" r="10" fill="none" stroke="rgba(60,45,30,0.35)" stroke-width="2"/>
+    <circle cx="45" cy="40" r="10" fill="none" stroke="rgba(60,45,30,0.35)" stroke-width="2"/>
+    <polyline points="15,40 25,22 45,40" fill="none" stroke="rgba(60,45,30,0.35)" stroke-width="2"/>
+    <line x1="25" y1="22" x2="38" y2="28" stroke="rgba(60,45,30,0.35)" stroke-width="2"/>
+    <rect x="22" y="19" width="6" height="3" rx="1" fill="rgba(60,45,30,0.4)"/>
+    <line x1="36" y1="26" x2="42" y2="24" stroke="rgba(60,45,30,0.35)" stroke-width="2"/>
+    <line x1="25" y1="22" x2="28" y2="8" stroke="rgba(60,45,30,0.4)" stroke-width="2.5"/>
+    <line x1="28" y1="12" x2="36" y2="26" stroke="rgba(60,45,30,0.35)" stroke-width="2"/>
+    <line x1="28" y1="14" x2="38" y2="28" stroke="rgba(60,45,30,0.35)" stroke-width="2"/>
+    <circle cx="28" cy="4" r="5.5" fill="rgba(230,200,180,0.35)" stroke="rgba(60,45,30,0.25)" stroke-width="1.5"/>
+    <path d="M22,3 Q28,-3 34,3" fill="rgba(50,35,25,0.25)"/>
+    <line x1="26" y1="22" x2="22" y2="34" stroke="rgba(60,45,30,0.35)" stroke-width="2.2"/>
+    <line x1="24" y1="22" x2="28" y2="34" stroke="rgba(60,45,30,0.35)" stroke-width="2.2"/>
   </svg>
 </div>
 
@@ -221,6 +228,10 @@ body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;min-height:100vh;dis
 <div class="petal p3" aria-hidden="true"></div>
 <div class="petal p4" aria-hidden="true"></div>
 <div class="petal p5" aria-hidden="true"></div>
+<div class="petal p6" aria-hidden="true"></div>
+
+<!-- 动态壁纸 - 光晕脉动 -->
+<div class="glow-pulse" aria-hidden="true"></div>
 
 <!-- 主容器 -->
 <div class="container">
